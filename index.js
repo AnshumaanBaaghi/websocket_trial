@@ -23,8 +23,9 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+app.use(express.static('public'));
 app.get("/", (req, res) => {
-  console.log('req:', req)
+  res.send("Working")
 });
 
 const obj = {};
