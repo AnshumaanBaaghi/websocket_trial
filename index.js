@@ -16,6 +16,10 @@ io.on("connection", (socket) => {
   });
 });
 */
+
+const dotenv = require('dotenv')
+dotenv.config()
+
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -45,6 +49,7 @@ io.on("connection", (socket) => {
 });
 
 const port = process.env.PORT || 3000;
+console.log('process.env.PORT:', process.env.PORT)
 
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
