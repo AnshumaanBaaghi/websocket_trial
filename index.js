@@ -17,6 +17,7 @@ io.on("connection", (socket) => {
 });
 */
 
+const { default: axios } = require('axios');
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -31,20 +32,27 @@ app.use(express.static('public'));
 app.get("/", (req, res) => {
   res.send("Working")
 });
-
-const obj = {};
+let obj = {};
+const fetchdata=async()=>{
+  const res = await axios('https://websocket-trial-jsonserver.onrender.com/Users/1');
+  obj = res.data
+  console.log('res:', res.data)
+}
+fetchdata();
 io.on("connection", (socket) => {
-  socket.on("new-user-joined", (name) => {
+  socket.on("new-user-joined", async(name) => {
     console.log("name:", name);
     obj[socket.id] = name;
+    await axios.put('https://websocket-trial-jsonserver.onrender.com/Users/1',obj)
     socket.broadcast.emit("user-joined", name);
   });
   socket.on("messageSent", (message) => {
     socket.broadcast.emit("receive", { message, name: obj[socket.id] });
   });
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async() => {
     socket.broadcast.emit("left", obj[socket.id]);
     delete obj[socket.id];
+    await axios.put('https://websocket-trial-jsonserver.onrender.com/Users/1',obj)
   });
 });
 
