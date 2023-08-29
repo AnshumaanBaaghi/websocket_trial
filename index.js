@@ -42,6 +42,7 @@ fetchdata();
 io.on("connection", (socket) => {
   socket.on("new-user-joined", async(name) => {
     console.log("name:", name);
+    await fetchdata();
     obj[socket.id] = name;
     await axios.put('https://websocket-trial-jsonserver.onrender.com/Users/1',obj)
     socket.broadcast.emit("user-joined", name);
@@ -51,6 +52,7 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", async() => {
     socket.broadcast.emit("left", obj[socket.id]);
+    await fetchdata(); 
     delete obj[socket.id];
     await axios.put('https://websocket-trial-jsonserver.onrender.com/Users/1',obj)
   });
